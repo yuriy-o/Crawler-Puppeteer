@@ -1,32 +1,22 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { BooksController } from './app.controller';
-import { PuppeteerService } from './puppeteer/puppeteer.service';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
 
-describe('BooksController', () => {
-  let booksController: BooksController;
-  let puppeteerService: PuppeteerService;
+describe('AppController', () => {
+  let appController: AppController;
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      controllers: [BooksController],
-      providers: [
-        {
-          provide: PuppeteerService,
-          useValue: {
-            scrapeBook: jest.fn(),
-          },
-        },
-      ],
+    const app: TestingModule = await Test.createTestingModule({
+      controllers: [AppController],
+      providers: [AppService],
     }).compile();
 
-    booksController = module.get<BooksController>(BooksController);
-    puppeteerService = module.get<PuppeteerService>(PuppeteerService);
+    appController = app.get<AppController>(AppController);
   });
 
-  describe('scrapeBook', () => {
-    it('should scrape the book', async () => {
-      await booksController.scrapeBook();
-      expect(puppeteerService.scrapeBook).toBeCalled();
+  describe('root', () => {
+    it('should return "Hello World!"', () => {
+      expect(appController.getHello()).toBe('Hello World!');
     });
   });
 });
