@@ -1,12 +1,12 @@
 import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
+import { PuppeteerService } from './puppeteer/puppeteer.service';
 
-@Controller()
-export class AppController {
-  constructor(private readonly appService: AppService) {}
+@Controller('books')
+export class BooksController {
+  constructor(private readonly puppeteerService: PuppeteerService) {}
 
-  @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  @Get('scrape')
+  async scrapeBook(): Promise<void> {
+    return this.puppeteerService.scrapeBook();
   }
 }
