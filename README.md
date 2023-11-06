@@ -12,28 +12,51 @@
 $ npm install
 ```
 
-## Running the app
+## Development
 
 ```bash
-# development
-$ npm run start
+npm run start
+```
 
-# watch mode
-$ npm run start:dev
+### watch mode
 
-# production mode
-$ npm run start:prod
+```bash
+npm run start:dev
+```
+
+### production mode
+
+```bash
+npm run start:prod
+```
+
+## Running the app
+
+### Prerequisites
+
+To initiate the parsing process, navigate to http://localhost:3000/books/scrape in your browser,
+or use the following command in the terminal:
+
+```bash
+curl http://localhost:3000/books/scrape
 ```
 
 ## Test
 
+### unit tests
+
 ```bash
-# unit tests
 $ npm run test
+```
 
-# e2e tests
+### e2e tests
+
+```bash
 $ npm run test:e2e
+```
 
-# test coverage
+### test coverage
+
+```bash
 $ npm run test:cov
 ```
