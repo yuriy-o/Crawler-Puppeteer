@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { BooksController } from './app.controller';
-import { PuppeteerModule } from './puppeteer/puppeteer.module';
-import { PuppeteerService } from './puppeteer/puppeteer.service';
+import { CrawlerModule } from './crawler/crawler.module';
+import { CrawlerService } from './crawler/./crawler.service';
 
 @Module({
-  imports: [PuppeteerModule],
+  imports: [CrawlerModule],
   controllers: [BooksController],
-  providers: [PuppeteerService],
+  providers: [CrawlerService],
 })
 export class AppModule {}

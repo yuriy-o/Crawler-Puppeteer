@@ -1,9 +1,9 @@
 import { Controller, Get } from '@nestjs/common';
-import { PuppeteerService } from './puppeteer/puppeteer.service';
+import { CrawlerService } from './crawler/./crawler.service';
 
 @Controller('books')
 export class BooksController {
-  constructor(private readonly puppeteerService: PuppeteerService) {}
+  constructor(private readonly puppeteerService: CrawlerService) {}
 
   @Get('scrape')
   async scrapeBook(): Promise<void> {
