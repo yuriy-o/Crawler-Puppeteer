@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
-import { BooksController } from './app.controller';
+import { CrawlerController } from './crawler/crawler.controller';
 import { CrawlerModule } from './crawler/crawler.module';
-import { CrawlerService } from './crawler/./crawler.service';
+import { CrawlerService } from './crawler/crawler.service';
 
 @Module({
   imports: [CrawlerModule],
-  controllers: [BooksController],
+  controllers: [CrawlerController],
   providers: [CrawlerService],
 })
 export class AppModule {}

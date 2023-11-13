@@ -6,11 +6,49 @@ import puppeteer, { Browser, ElementHandle, Page } from 'puppeteer';
 import 'dotenv/config';
 import * as process from 'process';
 
+const BASE: string = process.env.BASE;
+const book: string = ResourceUrlEnum.ALISA;
+// const bookUrl: string = ResourceUrlEnum.ALISA;
+const rub: string = ResourceUrlEnum.SITE_RUB;
+const fileName: string = book.replace(BASE, '').replace('.html', '.txt');
+let filePath: string = '';
+
 @Injectable()
 export class CrawlerService {
-  async scrapeBook(): Promise<void> {
+  async parser(site: string, book: string): Promise<string> {
+    const folderPath: string = path.join(
+      process.cwd(),
+      'src',
+      'downloaded-books-2',
+    );
+
+    // const fileName: string = bookUrl.replace(BASE, '').replace('.html', '.txt');
+    const fileName: string = `${site}-${book}.txt`;
+
+    filePath = path.join(folderPath, fileName);
+
+    console.log('folderPath >>>>', folderPath);
+    console.log('fileName >>>>', fileName);
+    console.log('filePath >>>>', filePath);
+
+    try {
+      await fs.promises.access(folderPath);
+    } catch (error) {
+      await fs.promises.mkdir(folderPath);
+    }
+
+    await this.scrapeBook(site, book, filePath);
+
+    return filePath;
+  }
+
+  async scrapeBook(
+    site: string,
+    book: string,
+    filePath: string,
+  ): Promise<void> {
     const BASE: string = process.env.BASE;
-    const bookUrl: string = ResourceUrlEnum.BOOK_3;
+    const bookUrl: string = ResourceUrlEnum.ALISA;
     const browser: Browser = await puppeteer.launch({ headless: 'new' });
     const page: Page = await browser.newPage();
     await page.goto(bookUrl);
@@ -44,28 +82,15 @@ export class CrawlerService {
         '#texts',
         (e: HTMLElement) => e.textContent,
       );
-      const textFromPage: string = await text.replace(/\uFFFC/g, '');
-      bookText += textFromPage.trim() + ' ';
+      const textCleaning: string = text
+        .replace(/\uFFFC/g, '')
+        .replace(/&nbsp;/g, '')
+        .replace(/\u00A0/g, '');
+      bookText += textCleaning.trim() + ' ';
     }
 
     await browser.close();
 
-    const folderPath: string = path.join(
-      process.cwd(),
-      'src',
-      'downloaded-books',
-    );
-    if (
-      !(await fs.promises
-        .access(folderPath)
-        .then((): Promise<boolean> => Promise.resolve(true))
-        .catch((): Promise<boolean> => Promise.resolve(false)))
-    ) {
-      await fs.promises.mkdir(folderPath);
-    }
-
-    const fileName: string = bookUrl.replace(BASE, '').replace('.html', '.txt');
-    const filePath: string = path.join(folderPath, fileName);
     await fs.promises.writeFile(filePath, bookText);
   }
 }
