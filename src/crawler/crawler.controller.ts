@@ -11,7 +11,9 @@ export class CrawlerController {
     @Param('book') book: string,
     @Param('filePath') filePath: string,
   ): Promise<any> {
-    // return this.crawlerService.parser(site, book);
+    console.log(`Starting scraping for site: ${site}, book: ${book}`);
+
+    await this.crawlerService.parser(site, book);
     return this.crawlerService.scrapeBook(site, book, filePath);
   }
 }

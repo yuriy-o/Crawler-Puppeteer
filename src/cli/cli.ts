@@ -3,6 +3,6 @@ import { CliModule } from './cli.module';
 
 async function bootstrap() {
   const app = await NestFactory.createApplicationContext(CliModule);
-  app.close();
+  await app.close();
 }
 bootstrap();
