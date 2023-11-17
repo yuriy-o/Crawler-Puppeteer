@@ -3,9 +3,12 @@ import { CrawlerController } from './crawler/crawler.controller';
 import { CrawlerModule } from './crawler/crawler.module';
 import { CrawlerService } from './crawler/crawler.service';
 
+import { CommandModule } from './command/command.module';
+import { BasicCommand } from './command/command.service';
+
 @Module({
-  imports: [CrawlerModule],
+  imports: [CrawlerModule, CommandModule],
   controllers: [CrawlerController],
-  providers: [CrawlerService],
+  providers: [CrawlerService, BasicCommand],
 })
 export class AppModule {}
