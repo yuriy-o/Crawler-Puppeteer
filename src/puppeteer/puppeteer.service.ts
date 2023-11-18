@@ -3,7 +3,8 @@ import ResourceUrlEnum from '../helper/resourceUrls';
 import * as fs from 'fs';
 import * as path from 'path';
 import puppeteer from 'puppeteer';
-import 'dotenv/config';
+import dotenv from 'dotenv';
+dotenv.config();
 
 @Injectable()
 export class PuppeteerService {
