@@ -1,10 +1,10 @@
-## Puppeteer
+## Puppeteer module
 
-Puppeteer модуль дозволяє отримати текст сторінки з вказаного URL за первим селектором.
+Модуль дозволяє отримати текст сторінки з вказаного URL за первим селектором.
 Додатково Puppeteer виконує пошук пагінації, і, якщо вона є, то отримує текст з усіх сторінок.
 Далі поєднує текст кожної сторінки, чистить та зберігає в окремий файл.
 
-[//]: # (![Demo]&#40;./preview.gif&#41;)
+![Demo](./preview.gif)
 
 ## Installation
 
@@ -46,17 +46,17 @@ curl http://localhost:3000/books/scrape
 ### unit tests
 
 ```bash
-$ npm run test copy
+$ npm run test
 ```
 
 ### e2e tests
 
 ```bash
-$ npm run test copy:e2e
+$ npm run test:e2e
 ```
 
 ### test coverage
 
 ```bash
-$ npm run test copy:cov
+$ npm run test:cov
 ```
