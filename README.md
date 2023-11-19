@@ -1,10 +1,26 @@
-## Puppeteer module
+### В цій версії коду працювати можна як:
+#### v1 → дані вказані всередині коду, без можливості вибору
+1. npm run start:dev
+2. curl http://localhost:3000/books/scrape
 
-Модуль дозволяє отримати текст сторінки з вказаного URL за первим селектором.
+#### v2 → дані отримує з командного рядка
+```bash
+npx nestjs-command book:parse -s value1 -b value2
+```
+```bash
+npx nestjs-command book:parse --site value1 --book value2
+```
+
+
+
+
+## Puppeteer
+
+Puppeteer модуль дозволяє отримати текст сторінки з вказаного URL за первим селектором.
 Додатково Puppeteer виконує пошук пагінації, і, якщо вона є, то отримує текст з усіх сторінок.
 Далі поєднує текст кожної сторінки, чистить та зберігає в окремий файл.
 
-![Demo](./preview.gif)
+[//]: # (![Demo]&#40;./preview.gif&#41;)
 
 ## Installation
 
@@ -40,23 +56,11 @@ or use the following command in the terminal:
 ```bash
 curl http://localhost:3000/books/scrape
 ```
-
-## Test
-
-### unit tests
-
+## При роботі з командного рядка:
 ```bash
-$ npm run test
+npx nestjs-command book:parse -s value1 -b value2
 ```
-
-### e2e tests
-
 ```bash
-$ npm run test:e2e
+npx nestjs-command book:parse --site value1 --book value2
 ```
-
-### test coverage
-
-```bash
-$ npm run test:cov
-```
+p.s. Дані взяв тут → https://www.npmjs.com/package/nestjs-command/v/3.0.0

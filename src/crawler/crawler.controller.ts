@@ -13,7 +13,12 @@ export class CrawlerController {
   ): Promise<any> {
     console.log(`Starting scraping for site: ${site}, book: ${book}`);
 
-    await this.crawlerService.parser(site, book);
+    await this.crawlerService.generateFilePath(site, book);
     return this.crawlerService.scrapeBook(site, book, filePath);
   }
+
+  // @Get('scrape')
+  // async scrapeBook(): Promise<void> {
+  //   return this.crawlerService.scrapeBook();
+  // }
 }

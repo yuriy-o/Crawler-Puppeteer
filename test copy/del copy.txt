@@ -1,5 +1,0 @@
-{{host}}/api/parser/site/bookname
-{{host}}/api/parser/libbook/harry-potter
-
-npm run book:parse -s=site -b=bookname
-npm run book:parse -s=site -b=ALISE
