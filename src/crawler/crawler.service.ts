@@ -1,11 +1,12 @@
 import { Command, Positional } from 'nestjs-command';
 import { Injectable } from '@nestjs/common';
-import ResourceUrlEnum from '../helper/resourceUrls';
 import * as fs from 'fs';
 import * as path from 'path';
 import puppeteer, { Browser, ElementHandle, Page } from 'puppeteer';
 import 'dotenv/config';
 import * as process from 'process';
+
+import ResourceUrlEnum from '../helper/resourceUrls';
 
 @Injectable()
 export class CrawlerService {
@@ -82,7 +83,7 @@ export class CrawlerService {
     filePath: string,
   ): Promise<void> {
     const BASE: string = process.env.BASE;
-    const bookUrl: string = ResourceUrlEnum.BOOK_33;
+    const bookUrl: string = ResourceUrlEnum.BOOK_4;
     const browser: Browser = await puppeteer.launch({ headless: 'new' });
     const page: Page = await browser.newPage();
     await page.goto(bookUrl);

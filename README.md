@@ -10,6 +10,9 @@ npx nestjs-command book:parse -s value1 -b value2
 ```bash
 npx nestjs-command book:parse --site value1 --book value2
 ```
+```bash
+nestjs-command book:parse -s rub -b alisa  
+```
 
 
 
