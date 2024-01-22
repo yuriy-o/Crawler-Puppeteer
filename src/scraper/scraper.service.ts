@@ -108,8 +108,17 @@ export class ScraperService {
   // update(id: number, updateScraperDto: UpdateScraperDto) {
   //   return `This action updates a #${id} scraper`;
   // }
-  //
-  // remove(id: number) {
-  //   return `This action removes a #${id} scraper`;
-  // }
+
+  async remove(id: number) {
+    const book = await this.scraperRepository.findOne({ where: { id } });
+
+    if (!book) throw new NotFoundException(`Book with id: ${id} not found`);
+
+    const deletionResult = await this.scraperRepository.delete({ id });
+
+    return {
+      message: `Book with id: ${id} has been successfully deleted`,
+      deletionResult,
+    };
+  }
 }
