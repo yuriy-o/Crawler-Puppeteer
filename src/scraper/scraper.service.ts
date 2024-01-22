@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import puppeteer from 'puppeteer';
@@ -88,11 +88,18 @@ export class ScraperService {
   // findAll() {
   //   return `This action returns all scraper`;
   // }
-  //
-  // findOne(id: number) {
-  //   return `This action returns a #${id} scraper`;
-  // }
-  //
+
+  async findOne(id: number) {
+    const book: ScraperEntity | undefined =
+      await this.scraperRepository.findOne({
+        where: { id },
+      });
+
+    if (!book) throw new NotFoundException(`Book with id: ${id} not found`);
+
+    return book;
+  }
+
   // update(id: number, updateScraperDto: UpdateScraperDto) {
   //   return `This action updates a #${id} scraper`;
   // }

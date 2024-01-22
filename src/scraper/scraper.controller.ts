@@ -1,4 +1,4 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param } from '@nestjs/common';
 
 import { ScraperService } from './scraper.service';
 import { CreateScraperDto } from './dto/create-scraper.dto';
@@ -16,12 +16,12 @@ export class ScraperController {
   // findAll() {
   //   return this.scraperService.findAll();
   // }
-  //
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.scraperService.findOne(+id);
-  // }
-  //
+
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.scraperService.findOne(+id);
+  }
+
   // @Patch(':id')
   // update(@Param('id') id: string, @Body() updateScraperDto: UpdateScraperDto) {
   //   return this.scraperService.update(+id, updateScraperDto);
