@@ -85,9 +85,14 @@ export class ScraperService {
     return newBook;
   }
 
-  // findAll() {
-  //   return `This action returns all scraper`;
-  // }
+  async findAll() {
+    const books: ScraperEntity[] = await this.scraperRepository.find({
+      order: { createdAt: 'DESC' },
+    });
+    const total: number = books.length;
+
+    return { books, total };
+  }
 
   async findOne(id: number) {
     const book: ScraperEntity | undefined =

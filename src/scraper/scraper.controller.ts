@@ -12,10 +12,10 @@ export class ScraperController {
     return this.scraperService.create(createScraperDto);
   }
 
-  // @Get()
-  // findAll() {
-  //   return this.scraperService.findAll();
-  // }
+  @Get()
+  findAll() {
+    return this.scraperService.findAll();
+  }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
