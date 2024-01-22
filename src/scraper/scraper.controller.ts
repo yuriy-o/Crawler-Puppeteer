@@ -1,7 +1,16 @@
-import { Controller, Post, Body, Get, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Param,
+  Delete,
+  Patch,
+} from '@nestjs/common';
 
 import { ScraperService } from './scraper.service';
 import { CreateScraperDto } from './dto/create-scraper.dto';
+import { UpdateScraperDto } from './dto/update-scraper.dto';
 
 @Controller('scrapers')
 export class ScraperController {
@@ -22,10 +31,10 @@ export class ScraperController {
     return this.scraperService.findOne(+id);
   }
 
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateScraperDto: UpdateScraperDto) {
-  //   return this.scraperService.update(+id, updateScraperDto);
-  // }
+  @Patch()
+  update(@Body() updateScraperDto: UpdateScraperDto) {
+    return this.scraperService.update(updateScraperDto);
+  }
 
   @Delete(':id')
   remove(@Param('id') id: string) {

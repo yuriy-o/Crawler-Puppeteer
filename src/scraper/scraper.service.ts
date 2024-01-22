@@ -5,6 +5,7 @@ import puppeteer from 'puppeteer';
 
 import { CreateScraperDto } from './dto/create-scraper.dto';
 import { ScraperEntity } from './entities/scraper.entity';
+import { UpdateScraperDto } from './dto/update-scraper.dto';
 
 @Injectable()
 export class ScraperService {
@@ -105,12 +106,32 @@ export class ScraperService {
     return book;
   }
 
-  // update(id: number, updateScraperDto: UpdateScraperDto) {
-  //   return `This action updates a #${id} scraper`;
-  // }
+  async update(updateScraperDto: UpdateScraperDto) {
+    const {
+      id,
+      bookText,
+      ...updateData
+    }: { id: number; bookText: string; [key: string]: any } = updateScraperDto;
+    const characterCount: number = bookText.length;
+
+    const book: ScraperEntity = await this.scraperRepository.findOne({
+      where: { id },
+    });
+
+    if (!book) throw new NotFoundException(`Book with id: ${id} not found`);
+
+    book.bookText = bookText;
+    book.characterCount = characterCount;
+
+    await this.scraperRepository.save(book);
+
+    return this.scraperRepository.update(id, updateData);
+  }
 
   async remove(id: number) {
-    const book = await this.scraperRepository.findOne({ where: { id } });
+    const book: ScraperEntity = await this.scraperRepository.findOne({
+      where: { id },
+    });
 
     if (!book) throw new NotFoundException(`Book with id: ${id} not found`);
 
