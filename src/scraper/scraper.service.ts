@@ -39,70 +39,77 @@ export class ScraperService {
 
     const { url }: { url: string } = createScraperDto;
 
-    const page: puppeteer.Page = await this.browser.newPage();
-    await page.goto(url);
-
+    let page: puppeteer.Page;
     let bookText: string = '';
     let characterCount: number = 0;
     let paginationCount: number = 0;
     let newBook: ScraperEntity;
 
-    const pagination = await page.$('.pagi-nav');
+    try {
+      page = await this.browser.newPage();
+      await page.goto(url);
 
-    if (pagination) {
-      const links: string[] = await pagination.$$eval('a', (elements) =>
-        elements.map((el) => el.textContent),
-      );
+      const pagination = await page.$('.pagi-nav');
 
-      const pagesInPagination: number[] = links
-        .map(Number)
-        .filter((value: number) => !isNaN(value));
-      paginationCount = Math.max(...pagesInPagination);
-    } else {
-      paginationCount = 1;
-
-      console.error('Не знайдено блок пагінації');
-    }
-
-    const domainRegex = /^(?:https?:\/\/)?(?:www\.)?([^\/]+)/;
-    const matches = url.match(domainRegex);
-
-    if (matches) {
-      const domain: string = matches[1];
-      for (let i: number = 1; i <= paginationCount; i++) {
-        const paginationUrl = `https://${domain}/page-${i}-${url.substring(
-          url.lastIndexOf('/') + 1,
-        )}`;
-        console.log('paginationUrl >>>>', paginationUrl);
-
-        await page.goto(paginationUrl);
-
-        const text: string = await page.$eval(
-          '#texts',
-          (e: HTMLElement) => e.textContent,
+      if (pagination) {
+        const links: string[] = await pagination.$$eval('a', (elements) =>
+          elements.map((el) => el.textContent),
         );
-        const textCleaning: string = text
-          .replace(/\uFFFC/g, '')
-          .replace(/&nbsp;/g, '')
-          .replace(/\u00A0/g, '');
-        bookText += textCleaning.trim() + ' ';
 
-        characterCount = bookText.length;
+        const pagesInPagination: number[] = links
+          .map(Number)
+          .filter((value: number) => !isNaN(value));
+        paginationCount = Math.max(...pagesInPagination);
+      } else {
+        paginationCount = 1;
+
+        console.error('Не знайдено блок пагінації');
       }
 
-      newBook = this.scraperRepository.create({
-        url,
-        bookText,
-        characterCount,
-        paginationCount,
-      });
+      const domainRegex = /^(?:https?:\/\/)?(?:www\.)?([^\/]+)/;
+      const matches = url.match(domainRegex);
 
-      await this.scraperRepository.save(newBook);
-    } else {
-      console.log('Invalid URL format');
+      if (matches) {
+        const domain: string = matches[1];
+        for (let i: number = 1; i <= paginationCount; i++) {
+          const paginationUrl = `https://${domain}/page-${i}-${url.substring(
+            url.lastIndexOf('/') + 1,
+          )}`;
+          console.log('paginationUrl >>>>', paginationUrl);
+
+          await page.goto(paginationUrl);
+
+          const text: string = await page.$eval(
+            '#texts',
+            (e: HTMLElement) => e.textContent,
+          );
+          const textCleaning: string = text
+            .replace(/\uFFFC/g, '')
+            .replace(/&nbsp;/g, '')
+            .replace(/\u00A0/g, '');
+          bookText += textCleaning.trim() + ' ';
+
+          characterCount = bookText.length;
+        }
+
+        newBook = this.scraperRepository.create({
+          url,
+          bookText,
+          characterCount,
+          paginationCount,
+        });
+
+        await this.scraperRepository.save(newBook);
+      } else {
+        console.log('Invalid URL format');
+      }
+    } catch (error) {
+      console.log('Error during scraping:', error);
+    } finally {
+      if (page) {
+        await page.close();
+      }
     }
-
-    await page.close();
 
     return newBook;
   }
@@ -164,8 +171,7 @@ export class ScraperService {
     };
   }
 
-  async onModuleDestroy() {
-    // Викликаємо метод знищення браузера при завершенні роботи з сервісом
-    await this.destroyBrowser();
+  async onModuleDestroy(): Promise<void> {
+    await this.destroyBrowser(); // Знищення браузера при завершенні роботи з сервісом
   }
 }
