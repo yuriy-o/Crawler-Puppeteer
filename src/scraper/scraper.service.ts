@@ -1,7 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-// import puppeteer from 'puppeteer';
 import * as puppeteer from 'puppeteer';
 
 import { CreateScraperDto } from './dto/create-scraper.dto';
@@ -20,25 +19,25 @@ export class ScraperService {
   static async create(
     scraperRepository: Repository<ScraperEntity>,
   ): Promise<ScraperService> {
-    const instance = new ScraperService(scraperRepository);
+    const instance: ScraperService = new ScraperService(scraperRepository);
     await instance.initializeBrowser();
     return instance;
   }
 
-  private async initializeBrowser() {
+  private async initializeBrowser(): Promise<void> {
     this.browser = await puppeteer.launch({ headless: 'new' });
   }
 
-  private async destroyBrowser() {
+  private async destroyBrowser(): Promise<void> {
     if (this.browser) {
       await this.browser.close();
     }
   }
 
-  async create(createScraperDto: CreateScraperDto) {
+  async create(createScraperDto: CreateScraperDto): Promise<ScraperEntity> {
     await this.initializeBrowser();
 
-    const { url } = createScraperDto;
+    const { url }: { url: string } = createScraperDto;
 
     const page: puppeteer.Page = await this.browser.newPage();
     await page.goto(url);
@@ -51,11 +50,11 @@ export class ScraperService {
     const pagination = await page.$('.pagi-nav');
 
     if (pagination) {
-      const links = await pagination.$$eval('a', (elements) =>
+      const links: string[] = await pagination.$$eval('a', (elements) =>
         elements.map((el) => el.textContent),
       );
 
-      const pagesInPagination = links
+      const pagesInPagination: number[] = links
         .map(Number)
         .filter((value: number) => !isNaN(value));
       paginationCount = Math.max(...pagesInPagination);
@@ -69,8 +68,8 @@ export class ScraperService {
     const matches = url.match(domainRegex);
 
     if (matches) {
-      const domain = matches[1];
-      for (let i = 1; i <= paginationCount; i++) {
+      const domain: string = matches[1];
+      for (let i: number = 1; i <= paginationCount; i++) {
         const paginationUrl = `https://${domain}/page-${i}-${url.substring(
           url.lastIndexOf('/') + 1,
         )}`;
