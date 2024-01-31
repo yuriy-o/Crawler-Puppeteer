@@ -1,7 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import puppeteer from 'puppeteer';
+// import puppeteer from 'puppeteer';
+import * as puppeteer from 'puppeteer';
 
 import { CreateScraperDto } from './dto/create-scraper.dto';
 import { ScraperEntity } from './entities/scraper.entity';
@@ -9,16 +10,37 @@ import { UpdateScraperDto } from './dto/update-scraper.dto';
 
 @Injectable()
 export class ScraperService {
+  private browser: puppeteer.Browser;
+
   constructor(
     @InjectRepository(ScraperEntity)
     private readonly scraperRepository: Repository<ScraperEntity>,
   ) {}
 
+  static async create(
+    scraperRepository: Repository<ScraperEntity>,
+  ): Promise<ScraperService> {
+    const instance = new ScraperService(scraperRepository);
+    await instance.initializeBrowser();
+    return instance;
+  }
+
+  private async initializeBrowser() {
+    this.browser = await puppeteer.launch({ headless: 'new' });
+  }
+
+  private async destroyBrowser() {
+    if (this.browser) {
+      await this.browser.close();
+    }
+  }
+
   async create(createScraperDto: CreateScraperDto) {
+    await this.initializeBrowser();
+
     const { url } = createScraperDto;
 
-    const browser = await puppeteer.launch({ headless: 'new' });
-    const page = await browser.newPage();
+    const page: puppeteer.Page = await this.browser.newPage();
     await page.goto(url);
 
     let bookText: string = '';
@@ -81,7 +103,7 @@ export class ScraperService {
       console.log('Invalid URL format');
     }
 
-    await browser.close();
+    await page.close();
 
     return newBook;
   }
@@ -141,5 +163,10 @@ export class ScraperService {
       message: `Book with id: ${id} has been successfully deleted`,
       deletionResult,
     };
+  }
+
+  async onModuleDestroy() {
+    // Викликаємо метод знищення браузера при завершенні роботи з сервісом
+    await this.destroyBrowser();
   }
 }
