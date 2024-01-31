@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as puppeteer from 'puppeteer';
+import { performance } from 'perf_hooks';
 
 import { CreateScraperDto } from './dto/create-scraper.dto';
 import { ScraperEntity } from './entities/scraper.entity';
@@ -47,6 +48,9 @@ export class ScraperService {
 
     try {
       page = await this.browser.newPage();
+
+      const startTime = performance.now();
+
       await page.goto(url);
 
       const pagination = await page.$('.pagi-nav');
@@ -92,11 +96,15 @@ export class ScraperService {
           characterCount = bookText.length;
         }
 
+        const endTime = performance.now();
+        const parseTime = Math.floor(endTime - startTime);
+
         newBook = this.scraperRepository.create({
           url,
           bookText,
           characterCount,
           paginationCount,
+          parseTime,
         });
 
         await this.scraperRepository.save(newBook);

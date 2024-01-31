@@ -23,6 +23,9 @@ export class ScraperEntity {
   @Column({ default: 0 })
   paginationCount: number;
 
+  @Column({ default: 0 })
+  parseTime: number;
+
   @CreateDateColumn()
   createdAt: Date;
 
